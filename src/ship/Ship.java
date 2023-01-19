@@ -57,21 +57,6 @@ public class Ship {
         health--;
     }
 
-    /**
-     * Get the start coordinate of the ship
-     * @return the start coordinate of the ship
-     */
-    public Coordinate getStart() {
-        return placement.get(0);
-    }
-
-    /**
-     * Get the end coordinate of the ship
-     * @return the end coordinate of the ship
-     */
-    public Coordinate getEnd() {
-        return placement.get(placement.size()-1);
-    }
 
     /**
      * Get the ship type of the current ship

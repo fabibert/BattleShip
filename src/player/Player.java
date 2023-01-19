@@ -55,12 +55,8 @@ public abstract class Player {
      */
     public boolean isFleetDestroyed(){
         AtomicInteger health = new AtomicInteger();
-        ships.forEach( (ship) -> { health.addAndGet(ship.getHealth()); } );
-        if (health.get() > 0){
-            return false;
-        } else {
-            return true;
-        }
+        ships.forEach(ship -> health.addAndGet(ship.getHealth()));
+        return health.get() <= 0;
     }
 
     /**
@@ -92,8 +88,7 @@ public abstract class Player {
      * @return if the underlying ship is sunk or still alive
      */
     public boolean didShipSink(Coordinate c){
-        if (c.getState() instanceof Sunk) return true;
-        return false;
+        return c.getState() instanceof Sunk;
     }
 
     /**
@@ -101,7 +96,7 @@ public abstract class Player {
      * @param c coordinate under attack
      * @return an arraylist of all the coordinates to be changed from hit to sunk
      */
-    public ArrayList informAboutSunkenShip(Coordinate c){
+    public ArrayList<Coordinate> informAboutSunkenShip(Coordinate c){
         Ship s = getShipFromCoordinate(c);
         return s.getPlacement();
     }
@@ -140,7 +135,7 @@ public abstract class Player {
      * empty method to display that each player has this method
      * Implementation will take place in each associated player
      */
-    public void shipPlacement(){}
+    public abstract void fleetPlacement();
 
     /**
      * draw the target grid of the user
@@ -158,12 +153,11 @@ public abstract class Player {
 
     /**
      * draw the final grid (target grid of the winner and ocean grid of the winner with the enemy attacks)
-     * @param o winner
      * @param t loser
      */
-    public void drawFinal(Player o, Player t){
+    public void drawFinal(Player t){
         t.target.printGrid();
-        this.ocean.drawFinal(t.getOcean(),o.getTarget());
+        this.ocean.drawFinal(t.getOcean(),this.getTarget());
     }
 
     /**

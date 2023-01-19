@@ -4,8 +4,12 @@ import utility.Coordinate;
 import ship.Ship;
 import ship.ShipType;
 import utility.Empty;
+import utility.Messaging;
 import utility.Occupied;
 import java.util.Scanner;
+
+import static utility.Messaging.shipLocationRequest;
+import static utility.Messaging.showUserCoordinateError;
 
 //imports for mock
 //import java.io.ByteArrayInputStream;
@@ -16,44 +20,44 @@ import java.util.Scanner;
  */
 public class Human extends Player {
 
-    public Human(){}
-
     /**
      * Method to place the ships for the human
      * The ships will be placed based on the input
      */
     @Override
-    public void shipPlacement() {
+    public void fleetPlacement() {
         for (ShipType shipType : ShipType.values()){
             for(int shipFromType = 0; shipFromType < shipType.getNumberOfShips(); shipFromType++){
-                boolean entered_unsuccessfully = true;
-                do {
-                    System.out.println("Where do you want to place your " + shipType + " (size: " + shipType.getShipLength() + ") (Ship no. " + (shipFromType + 1) + "/ " + shipType.getNumberOfShips() + ")\n" +
-                            "Enter Start end End Coordinates (e.g. A1,A" + shipType.getShipLength() + ")");
-                    try {
-                        /*
-                        //MOCK by deleting the comment from the line below and the associated method, userinput can be mocked
-                        String[] coords = new Scanner(mockShipPlacement()).next().split(",");
-                         */
-                        String[] coords = new Scanner(System.in).next().split(",");
-                        Coordinate start = new Coordinate(coords[0], new Occupied(shipType));
-                        Coordinate end = new Coordinate(coords[1], new Occupied(shipType));
-                        // check ship placement
-                        if (this.getOcean().placeShip(start, end)){
-                            Ship ship = new Ship(start, end, shipType);
-                            addShip(ship);
-                            entered_unsuccessfully = false;
-                            getOcean().updateOcean(ship);
-                        }
-                    } catch (Exception e) {
-                        System.out.println(e.getMessage());
-                        System.out.println("\n\nEnter them again...\n");
-                    }
-
-                }while(entered_unsuccessfully);
+                boolean isShipPlaced = false;
+                while (!isShipPlaced){
+                    isShipPlaced = attemptToPlaceShip(shipType, shipFromType);
+                }
                 this.getOcean().printGrid();
             }
         }
+    }
+
+    private boolean attemptToPlaceShip(ShipType shipType, int shipFromType) {
+        shipLocationRequest(shipType, shipFromType);
+        try {
+            /*
+            //MOCK by deleting the comment from the line below and the associated method, userinput can be mocked
+            String[] coords = new Scanner(mockShipPlacement()).next().split(",");
+             */
+            String[] coords = new Scanner(System.in).next().split(",");
+            Coordinate start = new Coordinate(coords[0], new Occupied(shipType));
+            Coordinate end = new Coordinate(coords[1], new Occupied(shipType));
+            Ship ship = new Ship(start, end, shipType);
+            // check ship placement
+            if (getOcean().canPlaceShip(ship)){
+                addShip(ship);
+                getOcean().placeShip(ship);
+                return true;
+            }
+        } catch (Exception e) {
+            showUserCoordinateError(e);
+        }
+        return false;
     }
 
     /**
@@ -64,8 +68,8 @@ public class Human extends Player {
     public Coordinate attack() {
         boolean unsuccessfulAttack = true;
         Coordinate coordinate = null;
-        do {
-            System.out.println("Attack attack attack, Captain enter the coordinates");
+        while(unsuccessfulAttack) {
+            Messaging.attack();
             try {
                 coordinate = new Coordinate(new Scanner(System.in).next(), Empty.state());
                 if (getTarget().isTargetAttackable(coordinate)){
@@ -74,13 +78,9 @@ public class Human extends Player {
                     System.out.println("\nTarget already attacked\n\n");
                 }
             } catch (Exception e) {
-                System.out.println("\nPlease enter valid coordinates...\n\n");
-                System.out.println("Specific error message");
-                System.out.println(e.getMessage());
-                System.out.println("\n\nEnter them again...\n");
+                showUserCoordinateError(e);
             }
-        } while(unsuccessfulAttack);
-
+        }
         return coordinate;
     }
 /*

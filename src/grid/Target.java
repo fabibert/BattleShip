@@ -27,7 +27,6 @@ public class Target extends Grid{
      * @return if the coordinate is attackable (true) or not (false)
      */
     public boolean isTargetAttackable(Coordinate coordinate){
-        if (this.getGridValue(coordinate).getState() instanceof Empty) return true;
-        return false;
+        return this.getGridValue(coordinate).getState() instanceof Empty;
     }
 }

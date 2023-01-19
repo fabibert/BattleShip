@@ -21,7 +21,7 @@ public class Computer extends Player {
      * The ships will be placed randomly
      */
     @Override
-    public void shipPlacement() {
+    public void fleetPlacement() {
         for (ShipType shipType : ShipType.values()) {
             // generate horizontal / vertical placement
             Random rand = new Random();
@@ -47,7 +47,7 @@ public class Computer extends Player {
                             end = new Coordinate(randomX, randomY + shipType.getShipLength()-1, new Occupied(shipType));
                         }
                         // check ship placement
-                        if (this.getOcean().placeShip(start, end)){
+                        if (this.getOcean().canPlaceShip(start, end)){
                             try{
                                 //ship can be placed
                                 Ship ship = new Ship(start, end, shipType);
