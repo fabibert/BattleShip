@@ -3,8 +3,6 @@ package player;
 import coordinate.Coordinate;
 import ship.Ship;
 import ship.ShipType;
-import location.Empty;
-import location.Occupied;
 
 import java.util.Random;
 
@@ -36,16 +34,16 @@ public class Computer extends Player {
                         Coordinate end;
                         if (horizontal) {
                             //horizontal
-                            int randomX = rand.nextInt(getTarget().getGridSize() - shipType.getShipLength());
-                            int randomY = rand.nextInt(getTarget().getGridSize());
-                            start = new Coordinate(randomX, randomY, new Occupied(shipType));
-                            end = new Coordinate(randomX + shipType.getShipLength()-1, randomY, new Occupied(shipType));
+                            int randomX = rand.nextInt(getPlayerTarget().getGridSize() - shipType.getShipLength());
+                            int randomY = rand.nextInt(getPlayerTarget().getGridSize());
+                            start = new Coordinate(randomX, randomY);
+                            end = new Coordinate(randomX + shipType.getShipLength()-1, randomY);
                         } else {
                             //vertical
-                            int randomX = rand.nextInt(getTarget().getGridSize());
-                            int randomY = rand.nextInt(getTarget().getGridSize() - shipType.getShipLength());
-                            start = new Coordinate(randomX, randomY, new Occupied(shipType));
-                            end = new Coordinate(randomX, randomY + shipType.getShipLength()-1, new Occupied(shipType));
+                            int randomX = rand.nextInt(getPlayerTarget().getGridSize());
+                            int randomY = rand.nextInt(getPlayerTarget().getGridSize() - shipType.getShipLength());
+                            start = new Coordinate(randomX, randomY);
+                            end = new Coordinate(randomX, randomY + shipType.getShipLength()-1);
                         }
                         Ship ship = new Ship(start, end, shipType);
                         if (this.getOcean().canPlaceShip(ship)){
@@ -78,12 +76,10 @@ public class Computer extends Player {
         while(unsuccessfulAttack) {
             try {
                 //generate a random value
-                int randomX = rand.nextInt(getTarget().getGridSize());
-                int randomY = rand.nextInt(getTarget().getGridSize());
-                coordinate = new Coordinate(randomX, randomY, Empty.getInstance());
-                if (getTarget().isTargetAttackable(coordinate)){
-                    unsuccessfulAttack = false;
-                }
+                int randomX = rand.nextInt(getPlayerTarget().getGridSize());
+                int randomY = rand.nextInt(getPlayerTarget().getGridSize());
+                coordinate = new Coordinate(randomX, randomY);
+                unsuccessfulAttack = !getPlayerTarget().attack(coordinate);
             } catch (Exception e) {
                 //exceptions happen due to wrongly created coordinates
                 //we do not want to spam, hence left out

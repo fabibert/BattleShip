@@ -3,9 +3,8 @@ package player;
 import coordinate.Coordinate;
 import ship.Ship;
 import ship.ShipType;
-import location.Empty;
 import messaging.Messaging;
-import location.Occupied;
+
 import java.util.Scanner;
 
 import static messaging.Messaging.shipLocationRequest;
@@ -45,8 +44,8 @@ public class Human extends Player {
             String[] coords = new Scanner(mockShipPlacement()).next().split(",");
              */
             String[] coords = new Scanner(System.in).next().split(",");
-            Coordinate start = new Coordinate(coords[0], new Occupied(shipType));
-            Coordinate end = new Coordinate(coords[1], new Occupied(shipType));
+            Coordinate start = new Coordinate(coords[0]);
+            Coordinate end = new Coordinate(coords[1]);
             Ship ship = new Ship(start, end, shipType);
             // check ship placement
             if (getOcean().canPlaceShip(ship)){
@@ -71,10 +70,9 @@ public class Human extends Player {
         while(unsuccessfulAttack) {
             Messaging.attack();
             try {
-                coordinate = new Coordinate(new Scanner(System.in).next(), Empty.getInstance());
-                if (getTarget().isTargetAttackable(coordinate)){
-                    unsuccessfulAttack = false;
-                } else {
+                coordinate = new Coordinate(new Scanner(System.in).next());
+                unsuccessfulAttack = !getPlayerTarget().attack(coordinate);
+                if (unsuccessfulAttack){
                     System.out.println("\nTarget already attacked\n\n");
                 }
             } catch (Exception e) {

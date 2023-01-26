@@ -1,8 +1,6 @@
 package location;
 
-import coordinate.Coordinate;
 import ship.Ship;
-import ship.ShipType;
 
 /**
  * State pattern to represent the occupied coordinates
@@ -39,14 +37,8 @@ public class Occupied implements LocationState {
     }
 
     @Override
-    public AttackSucess attack() {
+    public void attack() {
         ship.shipGotHit();
-        location.setState(Hit.getInstance());
-        if (ship.getHealth() == 0) {
-            return AttackSucess.SUNK;
-        } else {
-            return AttackSucess.HIT;
-        }
-
+        location.setTargetState(TargetState.HIT);
     }
 }

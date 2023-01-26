@@ -2,8 +2,7 @@ package player;
 
 import coordinate.Coordinate;
 import grid.Ocean;
-import grid.Target;
-import location.*;
+import grid.Targeting;
 import ship.Ship;
 
 import java.util.ArrayList;
@@ -16,13 +15,12 @@ public abstract class Player {
     //each player consists of an ocean grid
     private Ocean ocean;
     //each player consists of a target grid
-    private Target target;
+    private Targeting target;
     //each player consists of a fleet of ships
     private ArrayList<Ship> ships;
 
     public Player(){
         this.ocean = new Ocean();
-        this.target = new Target();
         this.ships = new ArrayList<>();
     }
 
@@ -30,7 +28,7 @@ public abstract class Player {
      * get the ocean of the user (only possible in this package)
      * @return the users ocean
      */
-    protected Ocean getOcean() {
+    public Ocean getOcean() {
         return ocean;
     }
 
@@ -38,10 +36,14 @@ public abstract class Player {
      * get the target of the user (only possible in this package)
      * @return the users target
      */
-    protected Target getTarget() {
-        return target;
+    public Targeting getPlayerTarget() {
+        return new Targeting(ocean);
     }
 
+    public void setTarget(Targeting target){
+        this.target = target;
+    }
+    
     /**
      * add a ship to the current fleet
      * @param ship to be stored in the fleet (ships)
@@ -61,74 +63,6 @@ public abstract class Player {
     }
 
     /**
-     * universal method for a player who's under attack
-     * by not passing the user the enemy cannot sneak peak into the users fleet
-     * @param coordinate coordinate where the attack is located
-     * @return the coordinate state of the item under attack
-     */
-    public AttackSucess underAttack(Coordinate coordinate){
-        Location location = ocean.getLocation(coordinate);
-        return location.attack();
-        if (ocean.getLocation(coordinate).isOccupied()) {
-            Ship s = getShipFromCoordinate(coordinate);
-            //deduct ship health
-            s.shipGotHit();
-            coordinate.setState(Hit.getInstance());
-            if (s.getHealth() == 0){
-                return new Sunk(s.getShipType());
-            } else {
-                return Hit.getInstance();
-            }
-
-        }
-        coordinate.setState(Missed.getInstance());
-        return Missed.getInstance();
-    }
-
-    /**
-     * check if the ship under attack was destroyed or still has some life left
-     * @param c coordinate under attack
-     * @return if the underlying ship is sunk or still alive
-     */
-    public boolean didShipSink(Coordinate c){
-        return c.getState() instanceof Sunk;
-    }
-
-    /**
-     * if the ship sunk, inform about all the coordinates which are now sunk
-     * @param c coordinate under attack
-     * @return an arraylist of all the coordinates to be changed from hit to sunk
-     */
-    public ArrayList<Coordinate> informAboutSunkenShip(Coordinate c){
-        Ship s = getShipFromCoordinate(c);
-        return s.getPlacement();
-    }
-
-    /**
-     * update the target grid and change the state of the attacker coordinate
-     * @param coordinate attacked
-     */
-    public void updateTarget(Coordinate coordinate){
-        target.updateTarget(coordinate);
-    }
-
-    /**
-     * Get the ship from the underlying coordinate
-     * @param c coordiante in question
-     * @return the underlying ship
-     */
-    public Ship getShipFromCoordinate(Coordinate c){
-        for(Ship s : ships){
-            for(Coordinate shipCord : s.getPlacement()){
-                if(shipCord.getX() == c.getX() && shipCord.getY() == c.getY()){
-                    return s;
-                }
-            }
-        }
-        return null;
-    }
-
-    /**
      * empty method to display that each player has this method
      * Implementation will take place in each associated player
      * @return null
@@ -144,7 +78,7 @@ public abstract class Player {
      * draw the target grid of the user
      */
     public void drawTarget(){
-        this.target.printGrid();
+        //this.target.printGrid();
     }
 
     /**
@@ -159,8 +93,8 @@ public abstract class Player {
      * @param t loser
      */
     public void drawFinal(Player t){
-        t.target.printGrid();
-        this.ocean.drawFinal(t.getOcean(),this.getTarget());
+        //t.target.printGrid();
+        this.ocean.drawFinal(t.getOcean(),this.getPlayerTarget());
     }
 
     /**

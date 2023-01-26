@@ -1,10 +1,10 @@
 package game.turn;
 
 import game.GameOperator;
+import location.TargetState;
 import player.Human;
 import player.Player;
 import coordinate.Coordinate;
-import location.Location;
 
 import java.util.ArrayList;
 
@@ -31,15 +31,7 @@ public abstract class TurnState {
      * @return return if the defender fleet has been destroyed
      */
     protected boolean attackSequence(){
-        Coordinate c = offensive.attack();
-        Location cs = defensive.underAttack(c);
-        c.setState(cs);
-        if (defensive.didShipSink(c)){
-            ArrayList<Coordinate> cords = defensive.informAboutSunkenShip(c);
-            for (Coordinate cord : cords){
-                offensive.updateTarget(cord);
-            }
-        } else{offensive.updateTarget(c);}
+        offensive.attack();
         if(offensive instanceof Human){
             offensive.drawGameFlow();
         }

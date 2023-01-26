@@ -26,11 +26,11 @@ public class Empty implements LocationState {
 
     @Override
     public void addShip(Ship ship) {
-        location.setState(new Occupied(ship));
+        location.setState(new Occupied(location, ship));
     }
 
     @Override
-    public AttackSucess attack() {
-        return AttackSucess.MISSED;
+    public void attack() {
+        location.setTargetState(TargetState.MISSED);
     }
 }

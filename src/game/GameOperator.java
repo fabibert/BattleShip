@@ -25,6 +25,8 @@ public class GameOperator {
     public GameOperator(){
         Human player = new Human();
         Computer ai = new Computer();
+        player.setTarget(ai.getPlayerTarget());
+        ai.setTarget(player.getPlayerTarget());
         player.fleetPlacement();
         ai.fleetPlacement();
 

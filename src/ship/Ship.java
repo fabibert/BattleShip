@@ -32,11 +32,11 @@ public class Ship {
         // fill all the coordinates where the ship is located into placement
         if(end.getX() > start.getX()){
             for (int x = start.getX()+1; x < end.getX(); x++){
-                placement.add(new Coordinate(x, end.getY(), new Occupied(shipType)));
+                placement.add(new Coordinate(x, end.getY()));
             }
         } else {
             for (int y = start.getY()+1; y < end.getY(); y++){
-                placement.add(new Coordinate(end.getX(), y, new Occupied(shipType)));
+                placement.add(new Coordinate(end.getX(), y));
             }
         }
         placement.add(end);

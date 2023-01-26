@@ -9,6 +9,7 @@ import ship.Ship;
 public class Location {
 
     private LocationState state;
+    private TargetState targetState = TargetState.EMPTY;
 
     public Location(){
         state = new Empty(this);
@@ -26,7 +27,15 @@ public class Location {
         this.state = state;
     }
 
-    public AttackSucess attack() {
-        return state.attack();
+    public boolean attack() {
+        if(targetState == TargetState.EMPTY){
+            state.attack();
+            return true;
+        }
+        return false;
+    }
+
+    protected void setTargetState(TargetState state){
+        this.targetState = state;
     }
 }
