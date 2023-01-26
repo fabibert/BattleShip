@@ -1,9 +1,8 @@
 package grid;
 
 import ship.Ship;
-import utility.Coordinate;
-import utility.Empty;
-import utility.Occupied;
+import coordinate.Coordinate;
+import location.Occupied;
 
 /**
  * the grid for the ocean showing the attacks
@@ -15,9 +14,8 @@ public class Ocean extends Grid {
     }
 
     public boolean canPlaceShip(Ship ship){
-        Coordinate[][] grid = getGrid();
         for(Coordinate coordinate : ship.getPlacement()){
-            if(grid[coordinate.getX()][coordinate.getY()].getState() instanceof Occupied){
+            if(getLocation(coordinate).isOccupied()){
                 return false;
             }
         }
@@ -31,11 +29,9 @@ public class Ocean extends Grid {
      */
     public void placeShip(Ship ship){
         //addShipToFleet
-        Coordinate[][] grid = getGrid();
         for(Coordinate coordinate : ship.getPlacement()){
-            grid[coordinate.getX()][coordinate.getY()].setState(new Occupied(ship.getShipType()));
+            getLocation(coordinate).addShip(ship);
         }
-        setGrid(grid);
     }
 
 }

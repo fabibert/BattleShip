@@ -1,10 +1,10 @@
 package player;
 
-import utility.Coordinate;
+import coordinate.Coordinate;
 import ship.Ship;
 import ship.ShipType;
-import utility.Empty;
-import utility.Occupied;
+import location.Empty;
+import location.Occupied;
 
 import java.util.Random;
 
@@ -12,6 +12,7 @@ import java.util.Random;
  * Computer class (represents the AI)
  */
 public class Computer extends Player {
+
 
     public Computer() {
     }
@@ -22,18 +23,18 @@ public class Computer extends Player {
      */
     @Override
     public void fleetPlacement() {
+        Random rand = new Random();
         for (ShipType shipType : ShipType.values()) {
             // generate horizontal / vertical placement
-            Random rand = new Random();
-            int direction = rand.nextInt(2);
+            boolean horizontal = rand.nextBoolean();
             for (int shipFromType = 0; shipFromType < shipType.getNumberOfShips(); shipFromType++) {
                 boolean entered_unsuccessfully = true;
-                do {
+                while(entered_unsuccessfully) {
                     try {
                         //generate rando
                         Coordinate start;
                         Coordinate end;
-                        if (direction == 1) {
+                        if (horizontal) {
                             //horizontal
                             int randomX = rand.nextInt(getTarget().getGridSize() - shipType.getShipLength());
                             int randomY = rand.nextInt(getTarget().getGridSize());
@@ -46,14 +47,13 @@ public class Computer extends Player {
                             start = new Coordinate(randomX, randomY, new Occupied(shipType));
                             end = new Coordinate(randomX, randomY + shipType.getShipLength()-1, new Occupied(shipType));
                         }
-                        // check ship placement
-                        if (this.getOcean().canPlaceShip(start, end)){
+                        Ship ship = new Ship(start, end, shipType);
+                        if (this.getOcean().canPlaceShip(ship)){
                             try{
                                 //ship can be placed
-                                Ship ship = new Ship(start, end, shipType);
-                                addShip(ship);
                                 entered_unsuccessfully = false;
-                                getOcean().updateOcean(ship);
+                                addShip(ship);
+                                getOcean().placeShip(ship);
                             }catch(AssertionError e){
                                 entered_unsuccessfully = true;
                             }
@@ -61,8 +61,7 @@ public class Computer extends Player {
                     } catch (Exception e) {
                         entered_unsuccessfully = true;
                     }
-
-                } while (entered_unsuccessfully);
+                }
             }
         }
     }
@@ -76,12 +75,12 @@ public class Computer extends Player {
         boolean unsuccessfulAttack = true;
         Coordinate coordinate = null;
         Random rand = new Random();
-        do {
+        while(unsuccessfulAttack) {
             try {
                 //generate a random value
                 int randomX = rand.nextInt(getTarget().getGridSize());
                 int randomY = rand.nextInt(getTarget().getGridSize());
-                coordinate = new Coordinate(randomX, randomY, Empty.state());
+                coordinate = new Coordinate(randomX, randomY, Empty.getInstance());
                 if (getTarget().isTargetAttackable(coordinate)){
                     unsuccessfulAttack = false;
                 }
@@ -89,7 +88,7 @@ public class Computer extends Player {
                 //exceptions happen due to wrongly created coordinates
                 //we do not want to spam, hence left out
             }
-        } while(unsuccessfulAttack);
+        }
 
         return coordinate;
     }

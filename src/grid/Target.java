@@ -1,7 +1,8 @@
 package grid;
 
-import utility.Coordinate;
-import utility.Empty;
+import coordinate.Coordinate;
+import location.Empty;
+import location.Location;
 
 /**
  * the grid for the targets showing the own placements
@@ -15,10 +16,10 @@ public class Target extends Grid{
      * Change the state of the underlying coordinate
      * @param coordinate which will change it state
      */
-    public void updateTarget(Coordinate coordinate){
+    public void updateTarget(Coordinate coordinate, Location location){
         //get the grid coordinate reference
         //update the grid reference to the state of the passed coordinate
-        this.getGridValue(coordinate).setState(coordinate.getState());
+        this.setLocation(coordinate, location);
     }
 
     /**
@@ -27,6 +28,6 @@ public class Target extends Grid{
      * @return if the coordinate is attackable (true) or not (false)
      */
     public boolean isTargetAttackable(Coordinate coordinate){
-        return this.getGridValue(coordinate).getState() instanceof Empty;
+        return !getLocation(coordinate).isOccupied();
     }
 }

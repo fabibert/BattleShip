@@ -1,15 +1,15 @@
 package player;
 
-import utility.Coordinate;
+import coordinate.Coordinate;
 import ship.Ship;
 import ship.ShipType;
-import utility.Empty;
-import utility.Messaging;
-import utility.Occupied;
+import location.Empty;
+import messaging.Messaging;
+import location.Occupied;
 import java.util.Scanner;
 
-import static utility.Messaging.shipLocationRequest;
-import static utility.Messaging.showUserCoordinateError;
+import static messaging.Messaging.shipLocationRequest;
+import static messaging.Messaging.showUserCoordinateError;
 
 //imports for mock
 //import java.io.ByteArrayInputStream;
@@ -71,7 +71,7 @@ public class Human extends Player {
         while(unsuccessfulAttack) {
             Messaging.attack();
             try {
-                coordinate = new Coordinate(new Scanner(System.in).next(), Empty.state());
+                coordinate = new Coordinate(new Scanner(System.in).next(), Empty.getInstance());
                 if (getTarget().isTargetAttackable(coordinate)){
                     unsuccessfulAttack = false;
                 } else {

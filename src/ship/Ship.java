@@ -1,7 +1,7 @@
 package ship;
 
-import utility.Coordinate;
-import utility.Occupied;
+import coordinate.Coordinate;
+import location.Occupied;
 
 import java.util.ArrayList;
 

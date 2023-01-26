@@ -1,9 +1,10 @@
 package player;
 
+import coordinate.Coordinate;
 import grid.Ocean;
 import grid.Target;
+import location.*;
 import ship.Ship;
-import utility.*;
 
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -65,21 +66,23 @@ public abstract class Player {
      * @param coordinate coordinate where the attack is located
      * @return the coordinate state of the item under attack
      */
-    public CoordinateState underAttack(Coordinate coordinate){
-        if (ocean.getGridValue(coordinate).getState() instanceof Occupied) {
+    public AttackSucess underAttack(Coordinate coordinate){
+        Location location = ocean.getLocation(coordinate);
+        return location.attack();
+        if (ocean.getLocation(coordinate).isOccupied()) {
             Ship s = getShipFromCoordinate(coordinate);
             //deduct ship health
             s.shipGotHit();
-            coordinate.setState(Hit.state());
+            coordinate.setState(Hit.getInstance());
             if (s.getHealth() == 0){
                 return new Sunk(s.getShipType());
             } else {
-                return Hit.state();
+                return Hit.getInstance();
             }
 
         }
-        coordinate.setState(Missed.state());
-        return Missed.state();
+        coordinate.setState(Missed.getInstance());
+        return Missed.getInstance();
     }
 
     /**

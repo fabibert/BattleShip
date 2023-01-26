@@ -3,8 +3,8 @@ package game.turn;
 import game.GameOperator;
 import player.Human;
 import player.Player;
-import utility.Coordinate;
-import utility.CoordinateState;
+import coordinate.Coordinate;
+import location.Location;
 
 import java.util.ArrayList;
 
@@ -32,7 +32,7 @@ public abstract class TurnState {
      */
     protected boolean attackSequence(){
         Coordinate c = offensive.attack();
-        CoordinateState cs = defensive.underAttack(c);
+        Location cs = defensive.underAttack(c);
         c.setState(cs);
         if (defensive.didShipSink(c)){
             ArrayList<Coordinate> cords = defensive.informAboutSunkenShip(c);
